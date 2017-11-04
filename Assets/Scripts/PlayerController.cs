@@ -12,6 +12,9 @@ public class PlayerController : MonoBehaviour {
     private Vector3 forward;
     private Vector3 right;
 
+    private float speedBuff;
+    private float speedBuffTimer;
+
     void Start () {
 		
 	}
@@ -24,6 +27,17 @@ public class PlayerController : MonoBehaviour {
         }
 	}
 
+    private void FixedUpdate()
+    {
+        UpdateSpeed();
+    }
+
+    void IncreaseSpeed(float increment, float timer)
+    {
+        speedBuff = increment;
+        speedBuffTimer = timer;
+    }
+
     private void Move()
     {
         if (mainCamera)
@@ -33,13 +47,29 @@ public class PlayerController : MonoBehaviour {
             right = Quaternion.Euler(new Vector3(0,90,0)) * forward;
         }
 
-        Vector3 rightMov = right * speed * Time.deltaTime * Input.GetAxis("Horizontal");
-        Vector3 forwardMov = forward * speed * Time.deltaTime * Input.GetAxis("Vertical");
+        float actualSpeed = speed + speedBuff;
+
+        Vector3 rightMov = right * actualSpeed * Time.deltaTime * Input.GetAxis("Horizontal");
+        Vector3 forwardMov = forward * actualSpeed * Time.deltaTime * Input.GetAxis("Vertical");
         Vector3 movement = rightMov + forwardMov;
 
         transform.forward = Vector3.Normalize(movement);
 
         Debug.DrawRay(transform.position, transform.forward, Color.green, 0.2f);
         transform.position += movement;
+    }
+
+    private void UpdateSpeed()
+    {
+        if (speedBuffTimer <= 0.0f)
+        {
+            speedBuff = 0.0f;
+            speedBuffTimer = 0.0f;
+        }
+
+        if (speedBuff > 0.0f && speedBuffTimer > 0.0f)
+        {
+            speedBuffTimer -= Time.deltaTime;
+        }
     }
 }
