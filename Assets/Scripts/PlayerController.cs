@@ -2,74 +2,116 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour {
+public class PlayerController : MonoBehaviour
+{
     [SerializeField]
     GameObject mainCamera;
+    [SerializeField]
+    GameObject field;
+    [SerializeField]
+    GameObject BuffController;
 
     [SerializeField]
     float speed = 0.0f;
 
-    private Vector3 forward;
-    private Vector3 right;
+    private Vector3 _forward;
+    private Vector3 _right;
+    private float _speedBuff;
+    private float _speedBuffTimer;
+    private BuffController _buffController;
+    private bool _allowInput = true;
 
-    private float speedBuff;
-    private float speedBuffTimer;
+    // Use this for initialization
+    void Start()
+    {
+        _buffController = BuffController.GetComponent<BuffController>();
+    }
 
-    void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-        if (Input.anyKey)
-        {
-            Move();
-        }
-	}
+    // Update is called once per frame
+    void Update()
+    {
+        Move();
+    }
 
     private void FixedUpdate()
     {
         UpdateSpeed();
     }
 
-    void IncreaseSpeed(float increment, float timer)
+    private void OnTriggerEnter(Collider other)
     {
-        speedBuff = increment;
-        speedBuffTimer = timer;
+        switch (other.gameObject.tag)
+        {
+            case "WasabiBuff":
+                _speedBuff = _buffController.buffSpeed;
+                _speedBuffTimer = _buffController.wasabiBuffSpeedTimer;
+                break;
+            case "SoySauceBuff":
+                _speedBuff = _buffController.buffSpeed;
+                _speedBuffTimer = Mathf.Infinity;
+                _allowInput = false;
+                break;
+            default:
+                return;
+        }
+    }
+
+    private void CheckBounds(Vector3 movement)
+    {
+        Vector3 newPosition = transform.position + movement;
+
+        if (field.GetComponent<Renderer>().bounds.Contains(new Vector3(newPosition.x, field.transform.position.y, newPosition.z)))
+        {
+            transform.position = newPosition;
+        }
+        else
+        {
+            _allowInput = true;
+            _speedBuffTimer = 0.0f;
+        }
     }
 
     private void Move()
     {
         if (mainCamera)
         {
-            forward = mainCamera.transform.forward;
-            forward.y = 0.0f;
-            right = Quaternion.Euler(new Vector3(0,90,0)) * forward;
+            _forward = mainCamera.transform.forward;
+            _forward.y = 0.0f;
+            _right = Quaternion.Euler(new Vector3(0, 90, 0)) * _forward;
         }
 
-        float actualSpeed = speed + speedBuff;
+        float actualSpeed = speed + _speedBuff;
+        Vector3 movement = Vector3.zero;
 
-        Vector3 rightMov = right * actualSpeed * Time.deltaTime * Input.GetAxis("Horizontal");
-        Vector3 forwardMov = forward * actualSpeed * Time.deltaTime * Input.GetAxis("Vertical");
-        Vector3 movement = rightMov + forwardMov;
+        if (!_allowInput)
+        {
+            movement = transform.forward * actualSpeed * Time.deltaTime;
+        }
+        else if (_allowInput && Input.anyKey)
+        {
+            Vector3 rightMov = _right * actualSpeed * Time.deltaTime * Input.GetAxis("Horizontal");
+            Vector3 forwardMov = _forward * actualSpeed * Time.deltaTime * Input.GetAxis("Vertical");
+            movement = rightMov + forwardMov;
+        }
 
-        transform.forward = Vector3.Normalize(movement);
-
-        Debug.DrawRay(transform.position, transform.forward, Color.green, 0.2f);
-        transform.position += movement;
+        if (Vector3.SqrMagnitude(movement) != 0.0f)
+        {
+            transform.forward = Vector3.Normalize(movement);
+            CheckBounds(movement);
+        }
     }
 
     private void UpdateSpeed()
     {
-        if (speedBuffTimer <= 0.0f)
+        if (_speedBuffTimer <= 0.0f)
         {
-            speedBuff = 0.0f;
-            speedBuffTimer = 0.0f;
+            _speedBuff = 0.0f;
+            _speedBuffTimer = 0.0f;
         }
 
-        if (speedBuff > 0.0f && speedBuffTimer > 0.0f)
+        if (_speedBuff > 0.0f && _speedBuffTimer > 0.0f)
         {
-            speedBuffTimer -= Time.deltaTime;
+            _speedBuffTimer -= Time.deltaTime;
         }
     }
 }
