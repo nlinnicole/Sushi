@@ -14,6 +14,12 @@ public class GameController : MonoBehaviour
     [SerializeField]
     GameObject menu;
     [SerializeField]
+    GameObject menuCamera;
+    [SerializeField]
+    GameObject levelCamera;
+    [SerializeField]
+    GameObject ingredientSpawner;
+    [SerializeField]
     int buffScoreVariation = 2;
     [SerializeField]
     int ingredientScoreVariation = 5;
@@ -23,6 +29,7 @@ public class GameController : MonoBehaviour
 
     private bool _isPaused = false;
     private bool _isGameOver = false;
+    private GameObject _player;
 
     void Awake()
     {
@@ -40,57 +47,38 @@ public class GameController : MonoBehaviour
 
     void Start()
     {
-        Debug.Log("Start");
-        StartCoroutine(StartLoadCoutdown());
+        _isPaused = true;
+        _player = GameObject.FindWithTag("Player");
     }
 
     void Update()
     {
         if (_isGameOver)
         {
-            GameObject player = GameObject.FindWithTag("Player");
-            if (player)
+            if (_player && _player.activeInHierarchy)
             {
-                Destroy(player);
+                ingredientSpawner.SetActive(false);
+                _player.SetActive(false);
             }
 
-            GameObject sceneMenu = GameObject.FindWithTag("Menu");
-            if (sceneMenu)
+            if (!_isPaused)
             {
-                sceneMenu.SetActive(true);
-            }
-            else
-            {
-                Instantiate(menu, transform.position, transform.rotation);
+                TogglePause();
             }
         }
-    }
-
-    public void LoadSceneByIndex(int sceneIndex = -1)
-    {
-        if (sceneIndex >= 0)
+        else if (Input.GetKey(KeyCode.Escape) && !_isPaused)
         {
-            SceneManager.LoadSceneAsync(sceneIndex, LoadSceneMode.Additive);
-        }
-    }
-
-    public void LoadSceneByName(string sceneName = null)
-    {
-        if (sceneName != null)
-        {
-            SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
+            TogglePause();
         }
     }
 
     public void Play()
     {
-        if (_isPaused)
+        TogglePause(_isPaused);
+        if (!_isPaused)
         {
-            TogglePause();
-        }
-        else
-        {
-            LoadSceneByIndex(1);
+            score = 0;
+            StartCoroutine(StartLoadCoutdown());
         }
     }
 
@@ -103,9 +91,32 @@ public class GameController : MonoBehaviour
 #endif
     }
 
-    public void TogglePause()
+    public void TogglePause(bool toggleCamera = false)
     {
-        _isPaused = true;
+        _isPaused = !_isPaused;
+        menu.SetActive(_isPaused);
+
+        if (toggleCamera)
+        {
+            Debug.Log("Toggle camera");
+
+            menuCamera.SetActive(_isPaused);
+            levelCamera.SetActive(!_isPaused);
+        }
+
+        Spawner spawner = ingredientSpawner.GetComponent<Spawner>();
+
+        if (spawner)
+        {
+            if (_isPaused)
+            {
+                spawner.StopSpawning();
+            }
+            else
+            {
+                spawner.StartSpawning();
+            }
+        }
     }
 
     public void UpdateScoreWithTag(string itemTag)
@@ -132,7 +143,16 @@ public class GameController : MonoBehaviour
 
     IEnumerator StartLoadCoutdown()
     {
+        Spawner spawner = ingredientSpawner.GetComponent<Spawner>();
+
         yield return new WaitForSeconds(3f);
+
+        if (spawner)
+        {
+            spawner.SetPlayer(_player);
+            spawner.StartSpawning();
+        }
+
         StartCoroutine(StartLevelCoutdown());
     }
 
