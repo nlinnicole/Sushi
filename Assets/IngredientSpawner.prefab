@@ -1501,9 +1501,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8167a453c20dcb84ba1e6eceebe91738, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  levelCamera: {fileID: 0}
   ingredients:
-  - {fileID: 1991803351488022, guid: 54adcbcb1bf17674fa254605c32eea17, type: 2}
-  - {fileID: 1027859377546060, guid: 96ca40d35f23e2748922cdd91199cb1c, type: 2}
+  - {fileID: 1922601458156726, guid: ea494159c6b4ea54e811ca93025dad82, type: 2}
+  - {fileID: 1174785616042886, guid: edffab649f00fe848a20cbfb1c3c09b5, type: 2}
+  - {fileID: 1470774139673542, guid: 6ceb809d1c261ad478a7248cb30f61dd, type: 2}
+  - {fileID: 1811512227133652, guid: 1ef5f235ae661de4ba3fe0c0c6977307, type: 2}
+  - {fileID: 1010449389409980, guid: 171756eea33b0cc4191f15513b11a8cf, type: 2}
+  - {fileID: 1284417005790328, guid: a217877028335374a99c021fd88b15d6, type: 2}
+  - {fileID: 1410901765453678, guid: ce2f3dcaf1768c94ba46e5e20476a511, type: 2}
+  - {fileID: 1733868906397536, guid: 488458dcaae0fe646856cf6c466644a4, type: 2}
   spawnTime: 5
   delayTime: 4
   spawnPoints:

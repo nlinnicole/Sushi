@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class IngredientController : MonoBehaviour {
 	// Look at the camera
-    public void SetCamera(GameObject camera)
+    public void SetFocusPoint(GameObject focusPoint)
     {
-        transform.LookAt(camera.transform.position, -Vector3.up);
+        transform.LookAt(focusPoint.transform.position, Vector3.up);
     }
 }

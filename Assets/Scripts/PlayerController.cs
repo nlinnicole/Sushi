@@ -12,6 +12,10 @@ public class PlayerController : MonoBehaviour
     GameObject gameController;
     [SerializeField]
     GameObject ChopstickSpear;
+    [SerializeField]
+    GameObject sprite;
+    [SerializeField]
+    GameObject spriteFocusPoint;
 
     [SerializeField]
     float speed = 0.0f;
@@ -37,6 +41,7 @@ public class PlayerController : MonoBehaviour
     {
         Move();
 
+        sprite.transform.LookAt(spriteFocusPoint.transform.position, Vector3.up);
         if (Input.GetButton("ChopstickFire") && _allowChopstickInput)
         {
             Instantiate(ChopstickSpear, transform.GetChild(0).position, Quaternion.LookRotation(-transform.up, transform.forward));
