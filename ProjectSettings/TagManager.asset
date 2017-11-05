@@ -6,6 +6,7 @@ TagManager:
   tags:
   - WasabiBuff
   - SoySauceBuff
+  - SpearAnchor
   layers:
   - Default
   - TransparentFX

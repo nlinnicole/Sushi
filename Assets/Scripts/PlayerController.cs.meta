@@ -1,10 +1,15 @@
 fileFormatVersion: 2
 guid: 60c75b12456b690448fb127374755e83
-timeCreated: 1509818582
+timeCreated: 1509834812
 licenseType: Free
 MonoImporter:
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - mainCamera: {instanceID: 0}
+  - field: {instanceID: 0}
+  - BuffController: {instanceID: 0}
+  - ChopstickSpear: {fileID: 1542340627865818, guid: 5b9967e3d5c30134586eefa953063699,
+      type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

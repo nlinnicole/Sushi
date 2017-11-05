@@ -10,6 +10,8 @@ public class PlayerController : MonoBehaviour
     GameObject field;
     [SerializeField]
     GameObject BuffController;
+    [SerializeField]
+    GameObject ChopstickSpear;
 
     [SerializeField]
     float speed = 0.0f;
@@ -19,7 +21,8 @@ public class PlayerController : MonoBehaviour
     private float _speedBuff;
     private float _speedBuffTimer;
     private BuffController _buffController;
-    private bool _allowInput = true;
+    private bool _allowMovementInput = true;
+    private bool _allowChopstickInput = true;
 
     // Use this for initialization
     void Start()
@@ -31,16 +34,27 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         Move();
+
+        if (Input.GetButton("ChopstickFire") && _allowChopstickInput)
+        {
+            Instantiate(ChopstickSpear, transform.GetChild(0).position, Quaternion.LookRotation(-transform.up, transform.forward));
+            StartCoroutine(ChopstickThrowCountdown());
+        }
     }
 
-    private void FixedUpdate()
+    void FixedUpdate()
     {
         UpdateSpeed();
     }
 
-    private void OnTriggerEnter(Collider other)
+    void OnTriggerEnter(Collider other)
     {
-        switch (other.gameObject.tag)
+        CollectItem(other.gameObject.tag);
+    }
+
+    public void CollectItem(string itemTag)
+    {
+        switch (itemTag)
         {
             case "WasabiBuff":
                 _speedBuff = _buffController.buffSpeed;
@@ -49,7 +63,7 @@ public class PlayerController : MonoBehaviour
             case "SoySauceBuff":
                 _speedBuff = _buffController.buffSpeed;
                 _speedBuffTimer = Mathf.Infinity;
-                _allowInput = false;
+                _allowMovementInput = false;
                 break;
             default:
                 return;
@@ -66,7 +80,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            _allowInput = true;
+            _allowMovementInput = true;
             _speedBuffTimer = 0.0f;
         }
     }
@@ -83,11 +97,11 @@ public class PlayerController : MonoBehaviour
         float actualSpeed = speed + _speedBuff;
         Vector3 movement = Vector3.zero;
 
-        if (!_allowInput)
+        if (!_allowMovementInput)
         {
             movement = transform.forward * actualSpeed * Time.deltaTime;
         }
-        else if (_allowInput && Input.anyKey)
+        else if (_allowMovementInput && Input.anyKey)
         {
             Vector3 rightMov = _right * actualSpeed * Time.deltaTime * Input.GetAxis("Horizontal");
             Vector3 forwardMov = _forward * actualSpeed * Time.deltaTime * Input.GetAxis("Vertical");
@@ -113,5 +127,12 @@ public class PlayerController : MonoBehaviour
         {
             _speedBuffTimer -= Time.deltaTime;
         }
+    }
+
+    private IEnumerator ChopstickThrowCountdown()
+    {
+        _allowChopstickInput = false;
+        yield return new WaitForSeconds(0.3f);
+        _allowChopstickInput = true;
     }
 }

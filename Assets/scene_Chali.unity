@@ -325,6 +325,34 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &796788824
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 796788825}
+  m_Layer: 0
+  m_Name: ChopstickSpearAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &796788825
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 796788824}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.257, y: 0, z: 0.585}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1873392986}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1158216461
 GameObject:
   m_ObjectHideFlags: 0
@@ -831,9 +859,10 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 1829398396}
+  - component: {fileID: 1829398397}
   - component: {fileID: 1829398395}
   m_Layer: 0
-  m_Name: BuffController
+  m_Name: GameController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -865,6 +894,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1829398397
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1829398394}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4401b1e098fd2db49a4e9f30ecd78f83, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxScore: 100
+  gameTime: 60
 --- !u!1 &1873392985
 GameObject:
   m_ObjectHideFlags: 0
@@ -894,7 +936,8 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.55, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 796788825}
   m_Father: {fileID: 1169488811}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -963,6 +1006,8 @@ MonoBehaviour:
   mainCamera: {fileID: 86133609}
   field: {fileID: 1444150373}
   BuffController: {fileID: 1829398394}
+  ChopstickSpear: {fileID: 1542340627865818, guid: 5b9967e3d5c30134586eefa953063699,
+    type: 2}
   speed: 5
 --- !u!54 &1873392991
 Rigidbody:
