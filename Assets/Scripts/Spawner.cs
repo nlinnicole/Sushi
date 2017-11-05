@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class Spawner : MonoBehaviour
 {
+    [SerializeField]
+    GameObject focusPoint;
+
     GameObject player;
 
     public GameObject[] ingredients;
@@ -74,7 +77,7 @@ public class Spawner : MonoBehaviour
 
             //Instantiate ingredient
             GameObject ingredient = Instantiate(ingredients[randomIndex], spawnPoints[spawnPointIndex].position, spawnPoints[spawnPointIndex].rotation);
-            // ingredient.GetComponent<IngredientController>().SetCamera(gameController.);
+            ingredient.GetComponentInChildren<IngredientController>().SetFocusPoint(focusPoint);
 
             //Add to list of instantiated ingredients
             instantiated.Add(ingredient);
