@@ -23,7 +23,7 @@ public class ChopstickSpearController : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        player.GetComponent<PlayerController>().CollectItem(other.gameObject.tag);
+        player.GetComponent<PlayerController>().CollectItem(other.gameObject);
     }
 
     private IEnumerator DestroyCountDown()

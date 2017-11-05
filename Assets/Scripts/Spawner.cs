@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Spawner : MonoBehaviour {
+    [SerializeField]
+    GameObject player;
+
     public GameObject[] ingredients;
     public float spawnTime = 0.3f;
     public float delayTime = 2f;
@@ -14,6 +17,20 @@ public class Spawner : MonoBehaviour {
 
     void Start() {
             InvokeRepeating("Spawn", spawnTime, spawnTime);
+    }
+
+    void Update()
+    {
+        if (!player)
+        {
+            instantiated.ForEach(el => Destroy(el));
+            Destroy(gameObject);
+        }
+    }
+
+    public void SetPlayer(GameObject newPlayer)
+    {
+        player = newPlayer;
     }
 
     void Spawn() {

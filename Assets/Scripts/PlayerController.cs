@@ -9,7 +9,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     GameObject field;
     [SerializeField]
-    GameObject BuffController;
+    GameObject gameController;
     [SerializeField]
     GameObject ChopstickSpear;
 
@@ -21,13 +21,15 @@ public class PlayerController : MonoBehaviour
     private float _speedBuff;
     private float _speedBuffTimer;
     private BuffController _buffController;
+    private GameController _gameController;
     private bool _allowMovementInput = true;
     private bool _allowChopstickInput = true;
 
     // Use this for initialization
     void Start()
     {
-        _buffController = BuffController.GetComponent<BuffController>();
+        _buffController = gameController.GetComponent<BuffController>();
+        _gameController = gameController.GetComponent<GameController>();
     }
 
     // Update is called once per frame
@@ -49,12 +51,12 @@ public class PlayerController : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        CollectItem(other.gameObject.tag);
+        CollectItem(other.gameObject);
     }
 
-    public void CollectItem(string itemTag)
+    public void CollectItem(GameObject item)
     {
-        switch (itemTag)
+        switch (item.tag)
         {
             case "WasabiBuff":
                 _speedBuff = _buffController.buffSpeed;
@@ -68,6 +70,9 @@ public class PlayerController : MonoBehaviour
             default:
                 return;
         }
+
+        _gameController.UpdateScoreWithTag(item.tag);
+        Destroy(item);
     }
 
     private void CheckBounds(Vector3 movement)

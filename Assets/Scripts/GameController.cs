@@ -1,28 +1,22 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
-    public static GameController instance
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                _instance = new GameController();
-            }
-
-            return _instance;
-        }
-    }
-
-    static GameController _instance = null;
+    static GameController instance = null;
 
     [SerializeField]
     int maxScore = 100;
     [SerializeField]
     float gameTime = 60f;
+    [SerializeField]
+    GameObject menu;
+    [SerializeField]
+    int buffScoreVariation = 2;
+    [SerializeField]
+    int ingredientScoreVariation = 5;
 
     // Game variables
     int score = 0;
@@ -32,7 +26,7 @@ public class GameController : MonoBehaviour
 
     void Awake()
     {
-        if (_instance == null)
+        if (instance == null)
         {
             instance = this;
         }
@@ -44,33 +38,94 @@ public class GameController : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
+    void Start()
+    {
+        Debug.Log("Start");
+        StartCoroutine(StartLoadCoutdown());
+    }
+
     void Update()
     {
-        if (Input.anyKey)
+        if (_isGameOver)
         {
-            // TODO : handle menu with arrows + ENTER
-            if (_isPaused)
+            GameObject player = GameObject.FindWithTag("Player");
+            if (player)
             {
-
+                Destroy(player);
             }
-            else if (_isGameOver)
-            {
 
+            GameObject sceneMenu = GameObject.FindWithTag("Menu");
+            if (sceneMenu)
+            {
+                sceneMenu.SetActive(true);
+            }
+            else
+            {
+                Instantiate(menu, transform.position, transform.rotation);
             }
         }
     }
 
-    public void LoadScene()
+    public void LoadSceneByIndex(int sceneIndex = -1)
     {
-
+        if (sceneIndex >= 0)
+        {
+            SceneManager.LoadSceneAsync(sceneIndex, LoadSceneMode.Additive);
+        }
     }
 
-    public void Pause()
+    public void LoadSceneByName(string sceneName = null)
+    {
+        if (sceneName != null)
+        {
+            SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
+        }
+    }
+
+    public void Play()
+    {
+        if (_isPaused)
+        {
+            TogglePause();
+        }
+        else
+        {
+            LoadSceneByIndex(1);
+        }
+    }
+
+    public void Quit()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
+    }
+
+    public void TogglePause()
     {
         _isPaused = true;
     }
 
-    public void UpdateScore(int variation)
+    public void UpdateScoreWithTag(string itemTag)
+    {
+        if (itemTag == null || itemTag.Length == 0)
+        {
+            return;
+        }
+
+        if (itemTag == "Ingredient")
+        {
+            UpdateScore(ingredientScoreVariation);
+        }
+        else if (itemTag.EndsWith("Buff"))
+        {
+            UpdateScore(buffScoreVariation);
+        }
+    }
+
+    void UpdateScore(int variation)
     {
         score = Mathf.RoundToInt(Mathf.Clamp(score + variation, 0f, maxScore));
     }
