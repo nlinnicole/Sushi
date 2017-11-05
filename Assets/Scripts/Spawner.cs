@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Spawner : MonoBehaviour {
-    [SerializeField]
+public class Spawner : MonoBehaviour
+{
     GameObject player;
 
     public GameObject[] ingredients;
@@ -14,53 +14,83 @@ public class Spawner : MonoBehaviour {
     private System.Random rnd = new System.Random();
 
     List<GameObject> instantiated = new List<GameObject>();
+    Coroutine spawnCoroutine;
 
-    void Start() {
-            InvokeRepeating("Spawn", spawnTime, spawnTime);
+    void OnDisable()
+    {
+        StopSpawning();
     }
 
     void Update()
     {
         if (!player)
         {
-            instantiated.ForEach(el => Destroy(el));
-            Destroy(gameObject);
+            Cleanup();
+            gameObject.SetActive(false);
         }
     }
 
     public void SetPlayer(GameObject newPlayer)
     {
         player = newPlayer;
+        Cleanup();
     }
 
-    void Spawn() {
-        Debug.Log("Spawning");
-        //pick random ingredient and location to spawn
-        int randomIndex = Random.Range(0, ingredients.Length);
-        int spawnPointIndex = Random.Range(0, spawnPoints.Length);
-
-        //Instantiate ingredient
-        GameObject ingredient = Instantiate(ingredients[randomIndex], spawnPoints[spawnPointIndex].position, spawnPoints[spawnPointIndex].rotation);
-
-        //Add to list of instantiated ingredients
-        instantiated.Add(ingredient);
-
-
-        //Destroy random ingredient
-        int rInst = rnd.Next(instantiated.Count);
-        if (rnd.Next(2) == 0)
+    public void StartSpawning()
+    {
+        if(!gameObject.activeInHierarchy)
         {
-            Destroy(instantiated[rInst], delayTime);
-            instantiated.RemoveAt(rInst);
-            Debug.Log("Destroying");
+            gameObject.SetActive(true);
+            spawnCoroutine = StartCoroutine(Spawn());
         }
-        if (instantiated.Count > 3) {
-            Debug.Log("Too crowded! Destroying");
-            for (int i = 0; i < instantiated.Count - 3; ++i) {
-                Destroy(instantiated[i]);
-            }
-        }
-        
+    }
 
+    public void StopSpawning()
+    {
+        if (spawnCoroutine != null)
+        {
+            StopCoroutine(spawnCoroutine);
+        }
+    }
+
+    void Cleanup()
+    {
+        instantiated.ForEach(el => Destroy(el));
+    }
+
+    IEnumerator Spawn()
+    {
+        while (true)
+        {
+            //pick random ingredient and location to spawn
+            int randomIndex = Random.Range(0, ingredients.Length);
+            int spawnPointIndex = Random.Range(0, spawnPoints.Length);
+
+            //Instantiate ingredient
+            GameObject ingredient = Instantiate(ingredients[randomIndex], spawnPoints[spawnPointIndex].position, spawnPoints[spawnPointIndex].rotation);
+
+            //Add to list of instantiated ingredients
+            instantiated.Add(ingredient);
+
+
+            //Destroy random ingredient
+            int rInst = rnd.Next(instantiated.Count);
+            if (rnd.Next(2) == 0)
+            {
+                Destroy(instantiated[rInst], delayTime);
+                instantiated.RemoveAt(rInst);
+                Debug.Log("Destroying");
+            }
+            if (instantiated.Count > 3)
+            {
+                Debug.Log("Too crowded! Destroying");
+                for (int i = 0; i < instantiated.Count - 3; ++i)
+                {
+                    Destroy(instantiated[i]);
+                }
+            }
+
+            yield return new WaitForSeconds(spawnTime);
+        }
     }
 }
