@@ -23,7 +23,7 @@ GameObject:
   - component: {fileID: 114851724492736074}
   m_Layer: 0
   m_Name: GameController
-  m_TagString: Untagged
+  m_TagString: GameController
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -68,3 +68,8 @@ MonoBehaviour:
   maxScore: 100
   gameTime: 60
   menu: {fileID: 1854401827722880, guid: c6995993273c7fa4a8adac347794d0f0, type: 2}
+  menuCamera: {fileID: 0}
+  levelCamera: {fileID: 0}
+  ingredientSpawner: {fileID: 0}
+  buffScoreVariation: 2
+  ingredientScoreVariation: 5

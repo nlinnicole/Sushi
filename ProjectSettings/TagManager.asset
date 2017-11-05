@@ -9,6 +9,7 @@ TagManager:
   - SpearAnchor
   - PlayerSpawnPoint
   - Menu
+  - Ingredient
   layers:
   - Default
   - TransparentFX

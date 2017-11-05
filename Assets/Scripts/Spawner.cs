@@ -12,9 +12,15 @@ public class Spawner : MonoBehaviour
     public Transform[] spawnPoints;
 
     private System.Random rnd = new System.Random();
+    private GameController gameController;
 
     List<GameObject> instantiated = new List<GameObject>();
     Coroutine spawnCoroutine;
+
+    void Start()
+    {
+        gameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
+    }
 
     void OnDisable()
     {
@@ -68,6 +74,7 @@ public class Spawner : MonoBehaviour
 
             //Instantiate ingredient
             GameObject ingredient = Instantiate(ingredients[randomIndex], spawnPoints[spawnPointIndex].position, spawnPoints[spawnPointIndex].rotation);
+            // ingredient.GetComponent<IngredientController>().SetCamera(gameController.);
 
             //Add to list of instantiated ingredients
             instantiated.Add(ingredient);
