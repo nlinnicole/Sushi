@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
 {
@@ -23,6 +24,9 @@ public class GameController : MonoBehaviour
     int buffScoreVariation = 2;
     [SerializeField]
     int ingredientScoreVariation = 5;
+
+    public int timer = 60;
+    public Text timeRemainingText;
 
     // Game variables
     int score = 0;
@@ -74,6 +78,8 @@ public class GameController : MonoBehaviour
 
     public void Play()
     {
+        GameObject ui = GameObject.FindWithTag("Menu");
+        ui.SetActive(false);
         TogglePause(_isPaused);
         if (!_isPaused)
         {
@@ -84,6 +90,9 @@ public class GameController : MonoBehaviour
 
     public void Quit()
     {
+        Debug.Log("quit game");
+        GameObject ui = GameObject.FindWithTag("Menu");
+        ui.SetActive(true);
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
 #else
@@ -154,6 +163,7 @@ public class GameController : MonoBehaviour
         }
 
         StartCoroutine(StartLevelCoutdown());
+        StartCoroutine(OneSecond());
     }
 
     IEnumerator StartLevelCoutdown()
@@ -165,5 +175,16 @@ public class GameController : MonoBehaviour
 
         yield return new WaitForSeconds(gameTime);
         _isGameOver = true;
+    }
+
+    IEnumerator OneSecond() {
+        while (true)
+        {
+            yield return new WaitForSeconds(1.0f);
+            timer--;
+            timeRemainingText.text = "Time: " + timer;
+            if (timer <= 0)
+                break;
+        }
     }
 }
