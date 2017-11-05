@@ -27,9 +27,10 @@ public class GameController : MonoBehaviour
 
     public int timer = 60;
     public Text timeRemainingText;
+    public Text ScoreText;
 
     // Game variables
-    int score = 0;
+    private int score = 0;
 
     private bool _isPaused = false;
     private bool _isGameOver = false;
@@ -74,12 +75,15 @@ public class GameController : MonoBehaviour
         {
             TogglePause();
         }
+        ScoreText.text = "Score: " + score;
     }
 
     public void Play()
     {
         GameObject ui = GameObject.FindWithTag("Menu");
         ui.SetActive(false);
+        GameObject decor = GameObject.FindWithTag("Decorative");
+        decor.SetActive(false);
         TogglePause(_isPaused);
         if (!_isPaused)
         {

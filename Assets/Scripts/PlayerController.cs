@@ -67,6 +67,9 @@ public class PlayerController : MonoBehaviour
                 _speedBuffTimer = Mathf.Infinity;
                 _allowMovementInput = false;
                 break;
+            case "Ingredient":
+                Destroy(item);
+                break;
             default:
                 return;
         }
